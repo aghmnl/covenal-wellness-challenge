@@ -57,22 +57,23 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.test.manifest)
 
     // Hilt (Dependency Injection)
-    implementation(libs.dagger.hilt.android) // Changed
-    kapt(libs.dagger.hilt.compiler) // Changed
-    implementation(libs.androidx.hilt.navigation.compose) // Changed
+    implementation(libs.dagger.hilt.android)
+    kapt(libs.dagger.hilt.compiler)
+    implementation(libs.androidx.hilt.navigation.compose)
 
     // Coroutines
-    implementation(libs.kotlinx.coroutines.android) // Changed
+    implementation(libs.kotlinx.coroutines.android)
 
     // Compose (Navigation & ViewModel)
-    implementation(libs.androidx.navigation.compose) // Changed
-    implementation(libs.androidx.lifecycle.viewmodel.compose) // Changed
+    implementation(libs.androidx.navigation.compose)
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
 
     // Retrofit (Networking)
-    implementation(libs.squareup.retrofit) // Changed
-    implementation(libs.squareup.converter.moshi) // Changed
-    implementation(libs.squareup.okhttp.logging.interceptor) // Changed
+    implementation(libs.squareup.retrofit)
+    implementation(libs.squareup.converter.moshi)
+    implementation(libs.squareup.moshi.kotlin)
+    implementation(libs.squareup.okhttp.logging.interceptor)
 
     // Coil (Image Loading for Compose)
-    implementation(libs.coil.compose) // Changed
+    implementation(libs.coil.compose) 
 }
