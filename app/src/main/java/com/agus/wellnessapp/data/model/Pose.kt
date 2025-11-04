@@ -3,21 +3,21 @@ package com.agus.wellnessapp.data.model
 import com.squareup.moshi.Json
 
 data class Pose(
-    @field:Json(name = "id")
+    @Json(name = "id")
     val id: Int,
 
-    @field:Json(name = "english_name")
-    val englishName: String,
+    @Json(name = "english_name")
+    val englishName: String? = null,
 
-    @field:Json(name = "sanskrit_name_adapted")
-    val sanskritName: String,
+    @Json(name = "sanskrit_name_adapted")
+    val sanskritName: String? = null,
 
-    @field:Json(name = "pose_description")
-    val description: String,
+    @Json(name = "pose_description")
+    val description: String? = null,
 
-    @field:Json(name = "pose_benefits")
-    val benefits: String,
+    @Json(name = "pose_benefits")
+    val benefits: String? = null,
 
-    @field:Json(name = "url_png")
-    val imageUrl: String
+    @Json(name = "url_png")
+    val imageUrl: String? = null
 )
