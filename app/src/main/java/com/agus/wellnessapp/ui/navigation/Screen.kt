@@ -6,12 +6,7 @@ private const val TAG = "Navigation"
 
 sealed class Screen(val route: String) {
 
-    object List : Screen("list") {
-        fun log() {
-            Log.d(TAG, "Navigating to: $route")
-        }
-    }
-
+    object List : Screen("list")
     object Detail : Screen("detail/{sessionId}") {
 
         const val ARG_SESSION_ID = "sessionId"

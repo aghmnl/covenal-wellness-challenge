@@ -27,6 +27,8 @@ fun SessionListScreen(
     onSessionClick: (Int) -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    val favoriteIds by viewModel.favoriteIds.collectAsState()
+
     Log.d(TAG, "Composing with state: isLoading=${uiState.isLoading}, errors=${uiState.error}, sessions=${uiState.sessions.size}")
     Scaffold(
         modifier = Modifier.fillMaxSize()
@@ -62,7 +64,16 @@ fun SessionListScreen(
                     contentPadding = PaddingValues(vertical = 8.dp)
                 ) {
                     items(uiState.sessions, key = { it.id }) { pose ->
-                        SessionListItem(pose = pose, onItemClick = onSessionClick)
+                        val isFavorite = favoriteIds.contains(pose.id.toString())
+                        SessionListItem(
+                            pose = pose,
+                            isFavorite = isFavorite,
+                            onItemClick = onSessionClick,
+                            onFavoriteClick = {
+                                Log.d(TAG, "Favorite icon clicked for id: ${pose.id}")
+                                viewModel.onToggleFavorite(pose.id.toString())
+                            }
+                        )
                     }
                 }
             }

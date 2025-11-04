@@ -10,10 +10,16 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material3.Card
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
@@ -29,10 +35,12 @@ private const val TAG = "SessionListItem"
 @Composable
 fun SessionListItem(
     pose: Pose,
+    isFavorite: Boolean,
     onItemClick: (Int) -> Unit,
+    onFavoriteClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Log.d(TAG, "Composing item for pose: ${pose.id} - ${pose.englishName}")
+    Log.d(TAG, "Composing item for pose: ${pose.id} - ${pose.englishName}, isFavorite=$isFavorite")
 
     Card(
         modifier = modifier
@@ -44,7 +52,8 @@ fun SessionListItem(
             }
     ) {
         Row(
-            modifier = Modifier.padding(16.dp)
+            modifier = Modifier.padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically
         ) {
             AsyncImage(
                 model = ImageRequest.Builder(LocalContext.current)
@@ -75,6 +84,13 @@ fun SessionListItem(
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
+            IconButton(onClick = onFavoriteClick) {
+                Icon(
+                    imageVector = if (isFavorite) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
+                    contentDescription = if (isFavorite) "Remove from favorites" else "Add to favorites",
+                    tint = if (isFavorite) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
         }
     }
 }
@@ -90,5 +106,5 @@ private fun SessionListItemPreview() {
         benefits = "Strengthens abs.",
         imageUrl = ""
     )
-    SessionListItem(pose = samplePose, onItemClick = {})
+    SessionListItem(pose = samplePose, isFavorite = true, onItemClick = {}, onFavoriteClick = {})
 }

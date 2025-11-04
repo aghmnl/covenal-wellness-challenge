@@ -1,5 +1,7 @@
 package com.agus.wellnessapp.di
 
+import com.agus.wellnessapp.data.repository.FavoritesRepository
+import com.agus.wellnessapp.data.repository.FavoritesRepositoryImpl
 import com.agus.wellnessapp.data.repository.SessionRepository
 import com.agus.wellnessapp.data.repository.SessionRepositoryImpl
 import dagger.Binds
@@ -12,13 +14,15 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 abstract class RepositoryModule {
 
-    /**
-     * Binds the SessionRepository interface to its implementation.
-     * When a class requests a [SessionRepository], Hilt will provide a [SessionRepositoryImpl].
-     */
     @Binds
     @Singleton
     abstract fun bindSessionRepository(
         sessionRepositoryImpl: SessionRepositoryImpl
     ): SessionRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindFavoritesRepository(
+        favoritesRepositoryImpl: FavoritesRepositoryImpl
+    ): FavoritesRepository
 }
