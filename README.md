@@ -8,10 +8,9 @@ This is a simple Android wellness app built for the *Android Frontend Developer*
 
 ## 📸 Screenshots
 
-| List Screen (Light Vibrant Theme) | Detail Screen |
-| :---: | :---: |
-| `![List Screenshot](docs/list-screen.png)` | `![Detail Screenshot](docs/detail-screen.png)` |
-
+|                  List Screen (Light Vibrant Theme)                  |                              Detail Screen                              |
+|:-------------------------------------------------------------------:|:-----------------------------------------------------------------------:|
+| <img src="docs/list-screen.png" alt="List Screenshot" width="200"/> | <img src="docs/detail-screen.png" alt="Detail Screenshot" width="200"/> |
 ---
 
 ## 🎯 Features
