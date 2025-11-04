@@ -23,7 +23,8 @@ private const val TAG = "SessionListScreen"
 
 @Composable
 fun SessionListScreen(
-    viewModel: SessionListViewModel = hiltViewModel()
+    viewModel: SessionListViewModel = hiltViewModel(),
+    onSessionClick: (Int) -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsState()
     Log.d(TAG, "Composing with state: isLoading=${uiState.isLoading}, errors=${uiState.error}, sessions=${uiState.sessions.size}")
@@ -61,7 +62,7 @@ fun SessionListScreen(
                     contentPadding = PaddingValues(vertical = 8.dp)
                 ) {
                     items(uiState.sessions, key = { it.id }) { pose ->
-                        SessionListItem(pose = pose)
+                        SessionListItem(pose = pose, onItemClick = onSessionClick)
                     }
                 }
             }

@@ -1,6 +1,7 @@
 package com.agus.wellnessapp.ui.list
 
 import android.util.Log
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -28,6 +29,7 @@ private const val TAG = "SessionListItem"
 @Composable
 fun SessionListItem(
     pose: Pose,
+    onItemClick: (Int) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Log.d(TAG, "Composing item for pose: ${pose.id} - ${pose.englishName}")
@@ -36,6 +38,10 @@ fun SessionListItem(
         modifier = modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 8.dp)
+            .clickable {
+                Log.d(TAG, "Item ${pose.id} clicked.")
+                onItemClick(pose.id)
+            }
     ) {
         Row(
             modifier = Modifier.padding(16.dp)
@@ -84,5 +90,5 @@ private fun SessionListItemPreview() {
         benefits = "Strengthens abs.",
         imageUrl = ""
     )
-    SessionListItem(pose = samplePose)
+    SessionListItem(pose = samplePose, onItemClick = {})
 }

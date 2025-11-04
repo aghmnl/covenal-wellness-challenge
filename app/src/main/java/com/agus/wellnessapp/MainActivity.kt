@@ -5,7 +5,12 @@ import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import com.agus.wellnessapp.ui.detail.SessionDetailScreen
 import com.agus.wellnessapp.ui.list.SessionListScreen
+import com.agus.wellnessapp.ui.navigation.Screen
 import com.agus.wellnessapp.ui.theme.CovenalWellnessAppTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -19,8 +24,28 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             CovenalWellnessAppTheme {
-                Log.d(TAG, "onCreate: Setting content to SessionListScreen")
-                SessionListScreen()
+                val navController = rememberNavController()
+                Log.d(TAG, "onCreate: Setting up NavHost")
+
+                NavHost(
+                    navController = navController,
+                    startDestination = Screen.List.route
+                ) {
+                    composable(route = Screen.List.route) {
+                        Log.d(TAG, "NavHost: Composing ListScreen")
+                        SessionListScreen(
+                            onSessionClick = { sessionId ->
+                                Log.d(TAG, "NavHost: List item clicked, id: $sessionId")
+                                navController.navigate(Screen.Detail.createRoute(sessionId))
+                            }
+                        )
+                    }
+
+                    composable(route = Screen.Detail.route) {
+                        Log.d(TAG, "NavHost: Composing DetailScreen")
+                        SessionDetailScreen()
+                    }
+                }
             }
         }
     }

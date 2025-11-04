@@ -32,4 +32,21 @@ class SessionRepositoryImpl @Inject constructor(
             }
         }
     }
+
+    override suspend fun getSessionDetail(id: String): Result<Pose> {
+        Log.d(TAG, "getSessionDetail: Fetching pose with id=$id")
+        return withContext(Dispatchers.IO) {
+            Result.runCatching {
+                Log.d(TAG, "getSessionDetail: API call in progress for id=$id")
+
+                val pose = apiService.getPoseById(id)
+
+                Log.i(TAG, "getSessionDetail: Successfully found pose: $pose")
+                pose
+
+            }.onFailure { e ->
+                Log.e(TAG, "getSessionDetail: Failed to fetch pose id=$id", e)
+            }
+        }
+    }
 }
