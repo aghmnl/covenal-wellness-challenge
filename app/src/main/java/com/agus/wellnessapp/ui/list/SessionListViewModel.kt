@@ -16,11 +16,12 @@ private const val TAG = "SessionListViewModel"
 class SessionListViewModel @Inject constructor(
     private val repository: SessionRepository,
     private val favoritesRepository: FavoritesRepository
-    // --- Context is GONE ---
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(SessionListUiState())
     val uiState: StateFlow<SessionListUiState> = _uiState.asStateFlow()
+
+    val networkErrors: Flow<String> = repository.getNetworkErrors()
 
     val favoriteIds: StateFlow<Set<String>> = favoritesRepository.getFavoriteIds()
         .stateIn(
@@ -56,7 +57,6 @@ class SessionListViewModel @Inject constructor(
                         sessions = poses
                     )
                 }
-                // --- All palette logic is GONE ---
 
             }.onFailure { throwable ->
                 Log.e(TAG, "fetchSessions: Failure.", throwable)

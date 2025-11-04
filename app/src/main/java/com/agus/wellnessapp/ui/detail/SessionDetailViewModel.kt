@@ -8,6 +8,7 @@ import com.agus.wellnessapp.data.repository.FavoritesRepository
 import com.agus.wellnessapp.data.repository.SessionRepository
 import com.agus.wellnessapp.ui.navigation.Screen
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -29,6 +30,8 @@ class SessionDetailViewModel @Inject constructor(
 
     private val _uiState = MutableStateFlow(SessionDetailUiState())
     val uiState: StateFlow<SessionDetailUiState> = _uiState.asStateFlow()
+
+    val networkErrors: Flow<String> = repository.getNetworkErrors()
 
     private val sessionId: String? = savedStateHandle.get<String>(Screen.Detail.ARG_SESSION_ID)
 

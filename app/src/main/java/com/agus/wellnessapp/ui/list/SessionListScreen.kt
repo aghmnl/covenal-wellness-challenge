@@ -1,6 +1,7 @@
 package com.agus.wellnessapp.ui.list
 
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -19,13 +20,15 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.agus.wellnessapp.ui.common.ErrorStateView
 import com.agus.wellnessapp.ui.theme.AppCardColors
 
 private const val TAG = "SessionListScreen"
@@ -38,6 +41,14 @@ fun SessionListScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val favoriteIds by viewModel.favoriteIds.collectAsState()
+
+    val context = LocalContext.current
+    LaunchedEffect(Unit) {
+        viewModel.networkErrors.collect { message ->
+            Log.d(TAG, "Showing Toast: $message")
+            Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+        }
+    }
 
     Log.d(TAG, "Composing with state: isLoading=${uiState.isLoading}, sessions=${uiState.sessions.size}, favorites=${favoriteIds.size}")
 
@@ -84,16 +95,10 @@ fun SessionListScreen(
                 CircularProgressIndicator()
             }
 
-
             uiState.error?.let { error ->
-                Log.d(TAG, "Displaying: Error - $error")
-                Text(
-                    text = error,
-                    color = Color.Red,
-                    modifier = Modifier.padding(16.dp)
-                )
+                Log.e(TAG, "Displaying FATAL error: $error")
+                ErrorStateView(message = error, modifier = Modifier.fillMaxSize())
             }
-
 
             if (uiState.sessions.isNotEmpty()) {
                 Log.d(TAG, "Displaying: Session List with ${uiState.sessions.size} items")
