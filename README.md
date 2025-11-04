@@ -34,16 +34,16 @@ This project was built using **100% Kotlin** and follows modern Android developm
 
 | Component | Technology | Rationale |
 | :--- | :--- | :--- |
-| **Architecture** | **MVVM** (Model-View-ViewModel) | Standard architecture for Android. Ensures a clean separation of concerns between the UI (Views), UI logic (ViewModels), and data (Repositories). |
+| **Architecture** | **MVVM + Clean Architecture** | The app uses a modern MVVM pattern. It is further decoupled by a **Domain Layer** (Use Cases) that separates business logic from the ViewModels and Repositories. This ensures a clean separation of concerns and high testability. |
 | **UI** | **Jetpack Compose** | The modern, declarative UI toolkit for Android. Allows for building UI faster and with less boilerplate code. |
 | **Asynchronicity** | **Kotlin Coroutines & Flow** | Used for all asynchronous operations, from network calls (`suspend`) to managing live data streams (`StateFlow`) for favorites and UI state. |
-| **Dependency Injection** | **Hilt** | Manages the creation and injection of dependencies (e.g., providing Repositories to ViewModels, creating the database). |
+| **Dependency Injection** | **Hilt** | Manages the creation and injection of all dependencies (e.g., providing Repositories to UseCases, and UseCases to ViewModels). |
 | **Unit Testing** | **JUnit 4, MockK, Coroutines Test** | Unit tests were written for the `SessionListViewModel` to verify its UI state logic. `MockK` is used to mock repositories, and a custom `MainDispatcherRule` manages coroutine dispatchers. |
 | **Navigation** | **Jetpack Navigation (Compose)** | A type-safe, single-source-of-truth (`Screen.kt`) approach to managing navigation between composables. |
 | **Networking** | **Retrofit & OkHttp** | The industry standard for type-safe REST API calls. An OkHttp interceptor is used to log network traffic, and timeouts are set to 30 seconds to handle the "spin-up" time of the free API. |
 | **Data Parsing** | **Moshi** | A modern, efficient JSON parser that works well with Kotlin data classes. |
 | **Data Source** | **Hybrid (Remote/Local)** | The `SessionRepository` acts as the single source of truth for *poses*, first attempting a network call. On failure, it falls back to a bundled `poses.json` file. |
-| **Persistence** | **Room Database** | User favorites are persisted locally in a Room database. This ensures favorites are saved even after the app is closed. The `FavoritesRepository` abstracts this logic from the ViewModels. |
+| **Persistence** | **Room Database** | User favorites are persisted locally in a Room database. The `FavoritesRepository` abstracts this logic from the UseCases. |
 | **Build** | **KSP (Kotlin Symbol Processing)** | Replaced `kapt` for both Hilt and Room to significantly improve build speed and performance. |
 | **Image Loading** | **Coil** | A modern, Kotlin-first image loading library that integrates perfectly with Jetpack Compose. |
 | **Theming** | **Static Theme** | A custom, consistent color palette (`lightVibrant`) is defined in `AppPalettes.kt` and applied to all cards via `AppCardColors.kt` for a clean, branded feel. |
@@ -55,7 +55,7 @@ This project was built using **100% Kotlin** and follows modern Android developm
 
 1.  Clone this repository:
     ```bash
-    git clone [YOUR_REPO_URL_HERE]
+    git clone https://github.com/aghmnl/covenal-wellness-challenge
     ```
 2.  Open the project in a recent version of Android Studio (e.g., Iguana or newer).
 3.  Let Gradle sync all dependencies.
