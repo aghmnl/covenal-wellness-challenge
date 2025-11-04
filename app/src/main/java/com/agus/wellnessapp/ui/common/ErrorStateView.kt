@@ -19,8 +19,10 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.agus.wellnessapp.R
+import com.agus.wellnessapp.ui.theme.CovenalWellnessAppTheme
 
 private const val TAG = "ErrorStateView"
 
@@ -58,6 +60,16 @@ fun ErrorStateView(message: String?, modifier: Modifier = Modifier) {
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.error,
             textAlign = TextAlign.Center
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun ErrorStateViewPreview() {
+    CovenalWellnessAppTheme {
+        ErrorStateView(
+            message = "java.net.SocketTimeoutException: timeout"
         )
     }
 }
