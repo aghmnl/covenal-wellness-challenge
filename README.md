@@ -37,7 +37,8 @@ This project was built using **100% Kotlin** and follows modern Android developm
 | **Architecture** | **MVVM** (Model-View-ViewModel) | Standard architecture for Android. Ensures a clean separation of concerns between the UI (Views), UI logic (ViewModels), and data (Repositories). |
 | **UI** | **Jetpack Compose** | The modern, declarative UI toolkit for Android. Allows for building UI faster and with less boilerplate code. |
 | **Asynchronicity** | **Kotlin Coroutines & Flow** | Used for all asynchronous operations, from network calls (`suspend`) to managing live data streams (`StateFlow`) for favorites and UI state. |
-| **Dependency Injection** | **Hilt** | Manages the creation and injection of dependencies (e.g., providing Repositories to ViewModels, providing `Context` to the ViewModel). |
+| **Dependency Injection** | **Hilt** | Manages the creation and injection of dependencies (e.g., providing Repositories to ViewModels). |
+| **Unit Testing** | **JUnit 4, MockK, Coroutines Test** | Unit tests were written for the `SessionListViewModel` to verify its UI state logic for both success and failure cases. `MockK` is used to mock repositories, and a custom `MainDispatcherRule` manages the coroutine dispatchers. |
 | **Navigation** | **Jetpack Navigation (Compose)** | A type-safe, single-source-of-truth (`Screen.kt`) approach to managing navigation between composables. |
 | **Networking** | **Retrofit & OkHttp** | The industry standard for type-safe REST API calls. An OkHttp interceptor is used to log network traffic, and timeouts are set to 30 seconds to handle the "spin-up" time of the free API. |
 | **Data Parsing** | **Moshi** | A modern, efficient JSON parser that works well with Kotlin data classes. |
@@ -60,8 +61,16 @@ This project was built using **100% Kotlin** and follows modern Android developm
 
 ---
 
-## 🧪 How to Test Offline Mode
+## 🧪 How to Test
 
+### Unit Tests
+The unit tests for the `SessionListViewModel` are located in `app/src/test/java/com/agus/wellnessapp/ui/list/`.
+
+You can run them by:
+1.  Right-clicking the `SessionListViewModelTest.kt` file.
+2.  Selecting "Run 'SessionListViewModelTest'".
+
+### Offline Mode
 1.  Ensure the app is fully closed.
 2.  Turn on **Airplane Mode** on your device or emulator.
 3.  Open the app.

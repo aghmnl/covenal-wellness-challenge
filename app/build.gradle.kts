@@ -75,5 +75,11 @@ dependencies {
     implementation(libs.squareup.okhttp.logging.interceptor)
 
     // Coil (Image Loading for Compose)
-    implementation(libs.coil.compose) 
+    implementation(libs.coil.compose)
+
+    // Test
+    testImplementation(libs.mockk.android)
+    testImplementation(libs.mockk.agent)
+    testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.androidx.arch.core.testing)
 }
