@@ -26,6 +26,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.agus.wellnessapp.ui.theme.AppCardColors
 
 private const val TAG = "SessionListScreen"
 
@@ -102,6 +103,7 @@ fun SessionListScreen(
                 ) {
                     items(uiState.sessions, key = { it.id }) { pose ->
                         val isFavorite = favoriteIds.contains(pose.id.toString())
+
                         SessionListItem(
                             pose = pose,
                             isFavorite = isFavorite,
@@ -109,7 +111,10 @@ fun SessionListScreen(
                             onFavoriteClick = {
                                 Log.d(TAG, "Favorite icon clicked for id: ${pose.id}")
                                 viewModel.onToggleFavorite(pose.id.toString())
-                            }
+                            },
+                            backgroundColor = AppCardColors.background,
+                            titleColor = AppCardColors.title,
+                            bodyColor = AppCardColors.body
                         )
                     }
                 }
