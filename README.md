@@ -8,9 +8,10 @@ This is a simple Android wellness app built for the *Android Frontend Developer*
 
 ## 📸 Screenshots
 
-|                  List Screen (Light Vibrant Theme)                  |                              Detail Screen                              |
-|:-------------------------------------------------------------------:|:-----------------------------------------------------------------------:|
-| <img src="docs/list-screen.png" alt="List Screenshot" width="200"/> | <img src="docs/detail-screen.png" alt="Detail Screenshot" width="200"/> |
+| All Poses Screen (Initial View) | Favorites Tab (Filtered View) | Detail Screen (Favorite) |
+| :---: | :---: | :---: |
+| <img src="docs/list-screen.png" alt="All Poses Screen" width="220"/> | <img src="docs/favorite-list-screen.png" alt="Favorites List Screen" width="220"/> | <img src="docs/detail-screen.png" alt="Detail Screenshot" width="220"/> |
+
 ---
 
 ## 🎯 Features
@@ -47,7 +48,7 @@ This project was built using **100% Kotlin** and follows modern Android developm
 | **Persistence** | **Room Database** | User favorites are persisted locally in a Room database. The `FavoritesRepository` abstracts this logic from the UseCases. |
 | **Build** | **KSP (Kotlin Symbol Processing)** | Replaced `kapt` for both Hilt and Room to significantly improve build speed and performance. |
 | **Analytics** | **Firebase Analytics** | **(Bonus)** Integrated to demonstrate understanding of production-level user behavior tracking. |
-| **Crash Reporting** | **Firebase Crashytics** | **(Bonus)** Integrated to provide production-grade stability monitoring and crash diagnostics. |
+| **Crash Reporting** | **Firebase Crashlytics** | **(Bonus)** Integrated to provide production-grade stability monitoring and crash diagnostics. |
 | **Image Loading** | **Coil** | A modern, Kotlin-first image loading library that integrates perfectly with Jetpack Compose. |
 | **Theming** | **Static Theme** | A custom, consistent color palette (`lightVibrant`) is defined in `AppPalettes.kt` and applied to all cards via `AppCardColors.kt` for a clean, branded feel. |
 | **Font** | **`NunitoSans` (Variable Font)** | A custom variable font (`.ttf`) is bundled in `res/font` and defined in `Type.kt` to give the app a unique, serene feel. |
