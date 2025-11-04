@@ -1,11 +1,11 @@
 package com.agus.wellnessapp.data.repository
 
 import android.util.Log
+import com.agus.wellnessapp.data.db.FavoritesDao
+import com.agus.wellnessapp.data.db.FavoritePoseEntity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -13,29 +13,33 @@ import javax.inject.Singleton
 private const val TAG = "FavoritesRepositoryImpl"
 
 @Singleton
-class FavoritesRepositoryImpl @Inject constructor() : FavoritesRepository {
+class FavoritesRepositoryImpl @Inject constructor(
+    private val favoritesDao: FavoritesDao
+) : FavoritesRepository {
 
-    private val _favoriteIds = MutableStateFlow<Set<String>>(emptySet())
-
+    /**
+     * This reads directly from the Room database flow.
+     * It maps the List<FavoritePoseEntity> to a Set<String>
+     * to match the interface, so the UI code doesn't break.
+     */
     override fun getFavoriteIds(): Flow<Set<String>> {
-        Log.d(TAG, "getFavoriteIds: Providing flow of favorites.")
-        return _favoriteIds.asStateFlow()
+        Log.d(TAG, "getFavoriteIds: Providing Flow from Room.")
+        return favoritesDao.getFavoriteEntities().map { entityList ->
+            entityList.map { it.poseId }.toSet()
+        }
     }
 
+    /** This logic checks the database and inserts or deletes. */
     override suspend fun toggleFavorite(id: String) {
         withContext(Dispatchers.IO) {
-            _favoriteIds.update { currentFavorites ->
-                val newFavorites = currentFavorites.toMutableSet()
-                if (newFavorites.contains(id)) {
-                    Log.d(TAG, "toggleFavorite: Removing $id from favorites.")
-                    newFavorites.remove(id)
-                } else {
-                    Log.d(TAG, "toggleFavorite: Adding $id to favorites.")
-                    newFavorites.add(id)
-                }
-                newFavorites
+            val existing = favoritesDao.getFavoriteById(id)
+            if (existing == null) {
+                Log.d(TAG, "toggleFavorite: Inserting $id into Room.")
+                favoritesDao.insert(FavoritePoseEntity(poseId = id))
+            } else {
+                Log.d(TAG, "toggleFavorite: Deleting $id from Room.")
+                favoritesDao.deleteById(id)
             }
-            Log.d(TAG, "toggleFavorite: New favorites list: ${_favoriteIds.value}")
         }
     }
 }

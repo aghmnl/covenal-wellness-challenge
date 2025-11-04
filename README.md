@@ -17,7 +17,7 @@ This is a simple Android wellness app built for the *Android Frontend Developer*
 
 * **List Screen:** Displays a scrollable list of yoga poses.
 * **Detail Screen:** Tapping a pose navigates to a detail screen with more information.
-* **Favorite System:** Users can add/remove poses from a favorites list. The state is shared between both screens.
+* **Persistent Favorites:** Users can add/remove poses from a favorites list. The state is saved locally using a **Room database**, so favorites are remembered even after the app closes.
 * **Themed UI:**
     * Uses a custom "Light Vibrant" color palette (`AppCardColors.kt`) for all list items.
     * Uses the custom `NunitoSans` variable font for all text.
@@ -37,13 +37,15 @@ This project was built using **100% Kotlin** and follows modern Android developm
 | **Architecture** | **MVVM** (Model-View-ViewModel) | Standard architecture for Android. Ensures a clean separation of concerns between the UI (Views), UI logic (ViewModels), and data (Repositories). |
 | **UI** | **Jetpack Compose** | The modern, declarative UI toolkit for Android. Allows for building UI faster and with less boilerplate code. |
 | **Asynchronicity** | **Kotlin Coroutines & Flow** | Used for all asynchronous operations, from network calls (`suspend`) to managing live data streams (`StateFlow`) for favorites and UI state. |
-| **Dependency Injection** | **Hilt** | Manages the creation and injection of dependencies (e.g., providing Repositories to ViewModels). |
-| **Unit Testing** | **JUnit 4, MockK, Coroutines Test** | Unit tests were written for the `SessionListViewModel` to verify its UI state logic for both success and failure cases. `MockK` is used to mock repositories, and a custom `MainDispatcherRule` manages the coroutine dispatchers. |
+| **Dependency Injection** | **Hilt** | Manages the creation and injection of dependencies (e.g., providing Repositories to ViewModels, creating the database). |
+| **Unit Testing** | **JUnit 4, MockK, Coroutines Test** | Unit tests were written for the `SessionListViewModel` to verify its UI state logic. `MockK` is used to mock repositories, and a custom `MainDispatcherRule` manages coroutine dispatchers. |
 | **Navigation** | **Jetpack Navigation (Compose)** | A type-safe, single-source-of-truth (`Screen.kt`) approach to managing navigation between composables. |
 | **Networking** | **Retrofit & OkHttp** | The industry standard for type-safe REST API calls. An OkHttp interceptor is used to log network traffic, and timeouts are set to 30 seconds to handle the "spin-up" time of the free API. |
 | **Data Parsing** | **Moshi** | A modern, efficient JSON parser that works well with Kotlin data classes. |
+| **Data Source** | **Hybrid (Remote/Local)** | The `SessionRepository` acts as the single source of truth for *poses*, first attempting a network call. On failure, it falls back to a bundled `poses.json` file. |
+| **Persistence** | **Room Database** | User favorites are persisted locally in a Room database. This ensures favorites are saved even after the app is closed. The `FavoritesRepository` abstracts this logic from the ViewModels. |
+| **Build** | **KSP (Kotlin Symbol Processing)** | Replaced `kapt` for both Hilt and Room to significantly improve build speed and performance. |
 | **Image Loading** | **Coil** | A modern, Kotlin-first image loading library that integrates perfectly with Jetpack Compose. |
-| **Data Source** | **Hybrid (Remote/Local)** | The `SessionRepository` acts as the single source of truth, first attempting a network call. On failure (e.g., `SocketTimeoutException`), it automatically falls back to a bundled `poses.json` file in `res/raw`, ensuring the app is **always functional**. |
 | **Theming** | **Static Theme** | A custom, consistent color palette (`lightVibrant`) is defined in `AppPalettes.kt` and applied to all cards via `AppCardColors.kt` for a clean, branded feel. |
 | **Font** | **`NunitoSans` (Variable Font)** | A custom variable font (`.ttf`) is bundled in `res/font` and defined in `Type.kt` to give the app a unique, serene feel. |
 
@@ -53,7 +55,7 @@ This project was built using **100% Kotlin** and follows modern Android developm
 
 1.  Clone this repository:
     ```bash
-    git clone https://github.com/aghmnl/covenal-wellness-challenge
+    git clone [YOUR_REPO_URL_HERE]
     ```
 2.  Open the project in a recent version of Android Studio (e.g., Iguana or newer).
 3.  Let Gradle sync all dependencies.
