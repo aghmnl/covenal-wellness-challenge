@@ -11,7 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color // <-- Import
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
@@ -73,10 +73,9 @@ fun SessionListItem(
             Column(
                 modifier = Modifier.weight(1f)
             ) {
-                // --- 4. APPLY PASSED-IN COLORS ---
                 Text(
                     text = pose.englishName ?: "Unknown Pose",
-                    style = MaterialTheme.typography.titleMedium,
+                    style = MaterialTheme.typography.titleLarge,
                     color = titleColor
                 )
                 Spacer(modifier = Modifier.height(4.dp))

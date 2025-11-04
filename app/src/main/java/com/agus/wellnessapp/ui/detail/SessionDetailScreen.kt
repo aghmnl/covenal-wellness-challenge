@@ -111,8 +111,7 @@ fun SessionDetailScreen(
                     Column(Modifier.padding(16.dp)) {
                         Text(
                             text = pose.englishName ?: "Unknown Pose",
-                            style = MaterialTheme.typography.headlineMedium,
-                            fontWeight = FontWeight.Bold
+                            style = MaterialTheme.typography.headlineMedium
                         )
                         Spacer(Modifier.height(4.dp))
                         Text(
