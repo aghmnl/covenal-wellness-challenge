@@ -10,24 +10,16 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material3.Badge
-import androidx.compose.material3.BadgedBox
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.material.icons.filled.List
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.agus.wellnessapp.ui.common.EmptyStateView
 import com.agus.wellnessapp.ui.common.ErrorStateView
 import com.agus.wellnessapp.ui.theme.AppCardColors
 
@@ -41,6 +33,9 @@ fun SessionListScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val favoriteIds by viewModel.favoriteIds.collectAsState()
+    val cardColors = AppCardColors
+
+    var selectedTab by rememberSaveable { mutableStateOf(SessionTab.ALL) }
 
     val context = LocalContext.current
     LaunchedEffect(Unit) {
@@ -54,14 +49,30 @@ fun SessionListScreen(
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
+        bottomBar = {
+            NavigationBar {
+                NavigationBarItem(
+                    selected = selectedTab == SessionTab.ALL,
+                    onClick = {
+                        Log.d(TAG, "Tab changed: ALL")
+                        selectedTab = SessionTab.ALL
+                    },
+                    icon = {
+                        Icon(
+                            imageVector = Icons.Default.List,
+                            contentDescription = "All Sessions"
+                        )
+                    },
+                    label = { Text("All") }
+                )
 
-        topBar = {
-            TopAppBar(
-                title = {
-                    Text("Wellness Sessions")
-                },
-                actions = {
-                    IconButton(onClick = { }) {
+                NavigationBarItem(
+                    selected = selectedTab == SessionTab.FAVORITES,
+                    onClick = {
+                        Log.d(TAG, "Tab changed: FAVORITES")
+                        selectedTab = SessionTab.FAVORITES
+                    },
+                    icon = {
                         BadgedBox(
                             badge = {
                                 if (favoriteIds.isNotEmpty()) {
@@ -73,15 +84,25 @@ fun SessionListScreen(
                         ) {
                             Icon(
                                 imageVector = Icons.Filled.Favorite,
-                                contentDescription = "Favorite count"
+                                contentDescription = "Favorites"
                             )
                         }
-                    }
+                    },
+                    label = { Text("Favorites") }
+                )
+            }
+        }
+    ) { innerPadding ->
+        val displayedSessions = remember(uiState.sessions, favoriteIds, selectedTab) {
+            when (selectedTab) {
+                SessionTab.ALL -> uiState.sessions
+                SessionTab.FAVORITES -> uiState.sessions.filter {
+                    favoriteIds.contains(it.id.toString())
                 }
-            )
+            }
         }
 
-    ) { innerPadding ->
+        Log.d(TAG, "Recomposing. Displaying ${displayedSessions.size} items for $selectedTab tab.")
 
         Box(
             modifier = Modifier
@@ -100,27 +121,36 @@ fun SessionListScreen(
                 ErrorStateView(message = error, modifier = Modifier.fillMaxSize())
             }
 
-            if (uiState.sessions.isNotEmpty()) {
-                Log.d(TAG, "Displaying: Session List with ${uiState.sessions.size} items")
-                LazyColumn(
-                    modifier = Modifier.fillMaxSize(),
-                    contentPadding = PaddingValues(vertical = 8.dp)
-                ) {
-                    items(uiState.sessions, key = { it.id }) { pose ->
-                        val isFavorite = favoriteIds.contains(pose.id.toString())
+            if (!uiState.isLoading && uiState.error == null) {
+                if (displayedSessions.isNotEmpty()) {
+                    LazyColumn(
+                        modifier = Modifier.fillMaxSize(),
+                        contentPadding = PaddingValues(top = 8.dp, bottom = 8.dp)
+                    ) {
+                        items(displayedSessions, key = { it.id }) { pose ->
 
-                        SessionListItem(
-                            pose = pose,
-                            isFavorite = isFavorite,
-                            onItemClick = onSessionClick,
-                            onFavoriteClick = {
-                                Log.d(TAG, "Favorite icon clicked for id: ${pose.id}")
-                                viewModel.onToggleFavorite(pose.id.toString())
-                            },
-                            backgroundColor = AppCardColors.background,
-                            titleColor = AppCardColors.title,
-                            bodyColor = AppCardColors.body
-                        )
+                            val isFavorite = favoriteIds.contains(pose.id.toString())
+
+                            SessionListItem(
+                                pose = pose,
+                                isFavorite = isFavorite,
+                                onItemClick = onSessionClick,
+                                onFavoriteClick = {
+                                    Log.d(TAG, "Favorite icon clicked for id: ${pose.id}")
+                                    viewModel.onToggleFavorite(pose.id.toString())
+                                },
+                                backgroundColor = cardColors.background,
+                                titleColor = cardColors.title,
+                                bodyColor = cardColors.body
+                            )
+                        }
+                    }
+                } else {
+                    when (selectedTab) {
+                        SessionTab.ALL ->
+                            EmptyStateView(message = "No sessions found.")
+                        SessionTab.FAVORITES ->
+                            EmptyStateView(message = "You haven't added any favorites yet.")
                     }
                 }
             }

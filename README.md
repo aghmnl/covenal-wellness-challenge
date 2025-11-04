@@ -15,16 +15,17 @@ This is a simple Android wellness app built for the *Android Frontend Developer*
 
 ## 🎯 Features
 
-* **List Screen:** Displays a scrollable list of yoga poses.
-* **Detail Screen:** Tapping a pose navigates to a detail screen with more information.
-* **Persistent Favorites:** Users can add/remove poses from a favorites list. The state is saved locally using a **Room database**, so favorites are remembered even after the app closes.
+* **Tabbed Main Screen:** The main screen features a `NavigationBar` (bottom nav) to switch between two views: "All Poses" and "Favorites".
+* **Favorites Tab & Badge:** The "Favorites" tab shows a filtered list of the user's saved poses. The navigation icon includes a `BadgedBox` that displays the total count of favorited items.
+* **Persistent Favorites:** Users can add/remove poses from a favorites list on either the list or detail screen. The state is saved locally using a **Room database**, so favorites are remembered even after the app closes.
+* **Detail Screen:** Tapping a pose navigates to a detail screen with more information and the ability to toggle its favorite status.
 * **Themed UI:**
   * Uses a custom "Light Vibrant" color palette (`AppCardColors.kt`) for all list items.
   * Uses the custom `NunitoSans` variable font for all text.
 * **Robust Data Strategy:** The app uses a **remote-first, local-fallback** approach.
   * It first tries to fetch data from the live API.
   * If the network fails (timeout or offline), it shows a user-friendly Toast message and seamlessly loads the data from a local `poses.json` file.
-* **Polished Error States:** A custom "Something snapped!" screen (`ErrorStateView`) is shown if the local data file fails to load.
+* **Polished Error States:** A custom `ErrorStateView` is shown if the local data file fails to load. A separate `EmptyStateView` is shown if the favorites list is empty.
 
 ---
 
@@ -46,7 +47,7 @@ This project was built using **100% Kotlin** and follows modern Android developm
 | **Persistence** | **Room Database** | User favorites are persisted locally in a Room database. The `FavoritesRepository` abstracts this logic from the UseCases. |
 | **Build** | **KSP (Kotlin Symbol Processing)** | Replaced `kapt` for both Hilt and Room to significantly improve build speed and performance. |
 | **Analytics** | **Firebase Analytics** | **(Bonus)** Integrated to demonstrate understanding of production-level user behavior tracking. |
-| **Crash Reporting** | **Firebase Crashlytics** | **(Bonus)** Integrated to provide production-grade stability monitoring and crash diagnostics. |
+| **Crash Reporting** | **Firebase Crashytics** | **(Bonus)** Integrated to provide production-grade stability monitoring and crash diagnostics. |
 | **Image Loading** | **Coil** | A modern, Kotlin-first image loading library that integrates perfectly with Jetpack Compose. |
 | **Theming** | **Static Theme** | A custom, consistent color palette (`lightVibrant`) is defined in `AppPalettes.kt` and applied to all cards via `AppCardColors.kt` for a clean, branded feel. |
 | **Font** | **`NunitoSans` (Variable Font)** | A custom variable font (`.ttf`) is bundled in `res/font` and defined in `Type.kt` to give the app a unique, serene feel. |
