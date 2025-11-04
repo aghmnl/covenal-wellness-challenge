@@ -4,18 +4,13 @@ import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.agus.wellnessapp.data.repository.FavoritesRepository
-import com.agus.wellnessapp.data.repository.SessionRepository
+import com.agus.wellnessapp.domain.usecase.GetFavoriteIdsUseCase
+import com.agus.wellnessapp.domain.usecase.GetNetworkErrorsUseCase
+import com.agus.wellnessapp.domain.usecase.GetSessionDetailUseCase
+import com.agus.wellnessapp.domain.usecase.ToggleFavoriteUseCase
 import com.agus.wellnessapp.ui.navigation.Screen
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -23,19 +18,21 @@ private const val TAG = "SessionDetailViewModel"
 
 @HiltViewModel
 class SessionDetailViewModel @Inject constructor(
-    private val repository: SessionRepository,
-    private val favoritesRepository: FavoritesRepository,
+    private val getSessionDetailUseCase: GetSessionDetailUseCase,
+    getFavoriteIdsUseCase: GetFavoriteIdsUseCase,
+    private val toggleFavoriteUseCase: ToggleFavoriteUseCase,
+    getNetworkErrorsUseCase: GetNetworkErrorsUseCase,
     savedStateHandle: SavedStateHandle
     ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(SessionDetailUiState())
     val uiState: StateFlow<SessionDetailUiState> = _uiState.asStateFlow()
 
-    val networkErrors: Flow<String> = repository.getNetworkErrors()
+    val networkErrors: Flow<String> = getNetworkErrorsUseCase()
 
     private val sessionId: String? = savedStateHandle.get<String>(Screen.Detail.ARG_SESSION_ID)
 
-    val isFavorite: StateFlow<Boolean> = favoritesRepository.getFavoriteIds()
+    val isFavorite: StateFlow<Boolean> = getFavoriteIdsUseCase()
         .map { favorites ->
             val isFav = favorites.contains(sessionId)
             Log.d(TAG, "isFavorite flow: $isFav for id=$sessionId")
@@ -65,7 +62,7 @@ class SessionDetailViewModel @Inject constructor(
         }
         Log.d(TAG, "onToggleFavorite: Toggling favorite for id=$sessionId")
         viewModelScope.launch {
-            favoritesRepository.toggleFavorite(sessionId)
+            toggleFavoriteUseCase(sessionId)
         }
     }
 
@@ -74,7 +71,7 @@ class SessionDetailViewModel @Inject constructor(
         _uiState.update { it.copy(isLoading = true, error = null) }
 
         viewModelScope.launch {
-            val result = repository.getSessionDetail(id)
+            val result = getSessionDetailUseCase(id)
 
             result.onSuccess { pose ->
                 Log.i(TAG, "fetchSessionDetail: Success for id=$id")

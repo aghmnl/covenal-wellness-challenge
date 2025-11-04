@@ -3,8 +3,10 @@ package com.agus.wellnessapp.ui.list
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.agus.wellnessapp.data.repository.FavoritesRepository
-import com.agus.wellnessapp.data.repository.SessionRepository
+import com.agus.wellnessapp.domain.usecase.GetFavoriteIdsUseCase
+import com.agus.wellnessapp.domain.usecase.GetNetworkErrorsUseCase
+import com.agus.wellnessapp.domain.usecase.GetSessionsUseCase
+import com.agus.wellnessapp.domain.usecase.ToggleFavoriteUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -14,16 +16,18 @@ private const val TAG = "SessionListViewModel"
 
 @HiltViewModel
 class SessionListViewModel @Inject constructor(
-    private val repository: SessionRepository,
-    private val favoritesRepository: FavoritesRepository
+    private val getSessionsUseCase: GetSessionsUseCase,
+    getFavoriteIdsUseCase: GetFavoriteIdsUseCase,
+    private val toggleFavoriteUseCase: ToggleFavoriteUseCase,
+    getNetworkErrorsUseCase: GetNetworkErrorsUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(SessionListUiState())
     val uiState: StateFlow<SessionListUiState> = _uiState.asStateFlow()
 
-    val networkErrors: Flow<String> = repository.getNetworkErrors()
+    val networkErrors: Flow<String> = getNetworkErrorsUseCase()
 
-    val favoriteIds: StateFlow<Set<String>> = favoritesRepository.getFavoriteIds()
+    val favoriteIds: StateFlow<Set<String>> = getFavoriteIdsUseCase()
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.Eagerly,
@@ -38,7 +42,7 @@ class SessionListViewModel @Inject constructor(
     fun onToggleFavorite(id: String) {
         Log.d(TAG, "onToggleFavorite: Toggling favorite for id=$id")
         viewModelScope.launch {
-            favoritesRepository.toggleFavorite(id)
+            toggleFavoriteUseCase(id)
         }
     }
 
@@ -47,7 +51,7 @@ class SessionListViewModel @Inject constructor(
         _uiState.update { it.copy(isLoading = true, error = null) }
 
         viewModelScope.launch {
-            val result = repository.getSessions()
+            val result = getSessionsUseCase()
 
             result.onSuccess { poses ->
                 Log.i(TAG, "fetchSessions: Success. ${poses.size} poses loaded.")
