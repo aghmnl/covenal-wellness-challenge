@@ -16,6 +16,8 @@ This is a simple Android wellness app built for the *Android Frontend Developer*
 
 ## 🎯 Features
 
+* **Deployment Status:** The app has been successfully uploaded and rolled out to an **Internal Testing** track on the `Google Play Console`, demonstrating readiness for production environments.
+* **App Icon:** A custom, branded app icon has been implemented.
 * **Tabbed Main Screen:** The main screen features a `NavigationBar` (bottom nav) to switch between two views: "All Poses" and "Favorites".
 * **Favorites Tab & Badge:** The "Favorites" tab shows a filtered list of the user's saved poses. The navigation icon includes a `BadgedBox` that displays the total count of favorited items.
 * **Persistent Favorites:** Users can add/remove poses from a favorites list on either the list or detail screen. The state is saved locally using a **Room database**, so favorites are remembered even after the app closes.

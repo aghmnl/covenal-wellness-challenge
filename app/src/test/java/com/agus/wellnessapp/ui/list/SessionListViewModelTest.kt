@@ -1,20 +1,15 @@
 package com.agus.wellnessapp.ui.list
 
-import android.app.Application
 import android.util.Log
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.agus.wellnessapp.data.model.Pose
-import com.agus.wellnessapp.data.repository.FavoritesRepository
-import com.agus.wellnessapp.data.repository.SessionRepository
+import com.agus.wellnessapp.domain.usecase.GetFavoriteIdsUseCase
+import com.agus.wellnessapp.domain.usecase.GetNetworkErrorsUseCase
+import com.agus.wellnessapp.domain.usecase.GetSessionsUseCase
+import com.agus.wellnessapp.domain.usecase.ToggleFavoriteUseCase
 import com.agus.wellnessapp.util.MainDispatcherRule
-import io.mockk.MockKAnnotations
-import io.mockk.Runs
-import io.mockk.coEvery
-import io.mockk.coVerify
-import io.mockk.every
+import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
-import io.mockk.just
-import io.mockk.mockkStatic
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.runBlocking
@@ -30,33 +25,30 @@ import org.junit.Test
 @ExperimentalCoroutinesApi
 class SessionListViewModelTest {
 
-    // This rule swaps main dispatchers for testing coroutines
     @get:Rule
     val mainDispatcherRule = MainDispatcherRule()
 
-    // This rule executes all architecture component tasks synchronously
     @get:Rule
     val instantExecutorRule = InstantTaskExecutorRule()
 
-    // Create relaxed mocks (they return default values for non-stubbed methods)
     @RelaxedMockK
-    private lateinit var sessionRepository: SessionRepository
+    private lateinit var getSessionsUseCase: GetSessionsUseCase
 
     @RelaxedMockK
-    private lateinit var favoritesRepository: FavoritesRepository
+    private lateinit var toggleFavoriteUseCase: ToggleFavoriteUseCase
 
     @RelaxedMockK
-    private lateinit var applicationContext: Application
+    private lateinit var getFavoriteIdsUseCase: GetFavoriteIdsUseCase
 
-    // The ViewModel we are testing
+    @RelaxedMockK
+    private lateinit var getNetworkErrorsUseCase: GetNetworkErrorsUseCase
+
     private lateinit var viewModel: SessionListViewModel
 
     @Before
     fun setUp() {
-        // Initialize all the @RelaxedMockK annotated properties in this class
         MockKAnnotations.init(this)
 
-        // Mock all static Log methods to do nothing
         mockkStatic(Log::class)
         every { Log.d(any(), any()) } returns 0
         every { Log.i(any(), any()) } returns 0
@@ -76,14 +68,17 @@ class SessionListViewModelTest {
             Pose(id = 1, englishName = "Test Pose 1"),
             Pose(id = 2, englishName = "Test Pose 2")
         )
-        // Mock the repositories to return successful data
-        coEvery { sessionRepository.getSessions() } returns Result.success(testPoses)
-        every { favoritesRepository.getFavoriteIds() } returns flowOf(emptySet())
+        coEvery { getSessionsUseCase() } returns Result.success(testPoses)
+        every { getFavoriteIdsUseCase() } returns flowOf(emptySet())
+        every { getNetworkErrorsUseCase() } returns flowOf()
 
-        // 2. Act (Create the ViewModel, which triggers 'init')
-        viewModel = SessionListViewModel(sessionRepository, favoritesRepository)
+        viewModel = SessionListViewModel(
+            getSessionsUseCase,
+            getFavoriteIdsUseCase,
+            toggleFavoriteUseCase,
+            getNetworkErrorsUseCase
+        )
 
-        // 3. Assert (Check the final state)
         val finalState = viewModel.uiState.value
         assertFalse("isLoading should be false after success", finalState.isLoading)
         assertNull("Error should be null on success", finalState.error)
@@ -93,20 +88,23 @@ class SessionListViewModelTest {
     /**
      * Test case for the failure path.
      * We check if the UI state correctly shows an error
-     * when the repository returns a failure.
+     * when the Use Case returns a failure.
      */
     @Test
     fun init_setsError_onFailure() = runTest {
         // 1. Arrange (Set up the mocks)
         val error = Exception("Network Error")
-        // Mock the repository to return a failure
-        coEvery { sessionRepository.getSessions() } returns Result.failure(error)
-        every { favoritesRepository.getFavoriteIds() } returns flowOf(emptySet())
+        coEvery { getSessionsUseCase() } returns Result.failure(error)
+        every { getFavoriteIdsUseCase() } returns flowOf(emptySet())
+        every { getNetworkErrorsUseCase() } returns flowOf()
 
-        // 2. Act (Create the ViewModel)
-        viewModel = SessionListViewModel(sessionRepository, favoritesRepository)
+        viewModel = SessionListViewModel(
+            getSessionsUseCase,
+            getFavoriteIdsUseCase,
+            toggleFavoriteUseCase,
+            getNetworkErrorsUseCase
+        )
 
-        // 3. Assert (Check the final state)
         val finalState = viewModel.uiState.value
         assertFalse("isLoading should be false after failure", finalState.isLoading)
         assertTrue("Sessions list should be empty on failure", finalState.sessions.isEmpty())
@@ -115,27 +113,28 @@ class SessionListViewModelTest {
 
     /**
      * Test that calling onToggleFavorite correctly calls the
-     * underlying repository function.
+     * underlying ToggleFavoriteUseCase function.
      */
     @Test
-    fun onToggleFavorite_callsRepository() = runTest {
-        // 1. Arrange (Set up mocks and create the ViewModel)
-        // We can use runBlocking here because it's just setup
+    fun onToggleFavorite_callsUseCase() = runTest {
         runBlocking {
-            coEvery { sessionRepository.getSessions() } returns Result.success(emptyList())
-            every { favoritesRepository.getFavoriteIds() } returns flowOf(emptySet())
+            coEvery { getSessionsUseCase() } returns Result.success(emptyList())
+            every { getFavoriteIdsUseCase() } returns flowOf(emptySet())
+            every { getNetworkErrorsUseCase() } returns flowOf()
         }
-        // Mock the function we expect to be called
-        coEvery { favoritesRepository.toggleFavorite(any()) } just Runs
+        coEvery { toggleFavoriteUseCase(any()) } just Runs
 
-        viewModel = SessionListViewModel(sessionRepository, favoritesRepository)
+        viewModel = SessionListViewModel(
+            getSessionsUseCase,
+            getFavoriteIdsUseCase,
+            toggleFavoriteUseCase,
+            getNetworkErrorsUseCase
+        )
 
-        // 2. Act (Call the function)
         viewModel.onToggleFavorite("123")
 
-        // 3. Assert (Verify the function was called)
         coVerify(exactly = 1) {
-            favoritesRepository.toggleFavorite("123")
+            toggleFavoriteUseCase("123")
         }
     }
 }
