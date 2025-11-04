@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.agus.wellnessapp.data.model.Pose
+import com.agus.wellnessapp.ui.theme.AppPalettes
 
 private const val TAG = "SessionListItem"
 
@@ -28,15 +29,12 @@ fun SessionListItem(
     isFavorite: Boolean,
     onItemClick: (Int) -> Unit,
     onFavoriteClick: () -> Unit,
-    // --- 1. RECEIVE COLORS AS PARAMETERS ---
     backgroundColor: Color,
     titleColor: Color,
     bodyColor: Color,
     modifier: Modifier = Modifier
 ) {
     Log.d(TAG, "Composing item for pose: ${pose.id} - ${pose.englishName}, isFavorite=$isFavorite")
-
-    // --- 2. REMOVE ALL LaunchedEffect AND REMEMBER LOGIC ---
 
     Card(
         modifier = modifier
@@ -46,7 +44,6 @@ fun SessionListItem(
                 Log.d(TAG, "Item ${pose.id} clicked.")
                 onItemClick(pose.id)
             },
-        // --- 3. APPLY THE PASSED-IN COLOR ---
         colors = CardDefaults.cardColors(
             containerColor = backgroundColor
         )
@@ -89,7 +86,7 @@ fun SessionListItem(
                 Icon(
                     imageVector = if (isFavorite) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
                     contentDescription = if (isFavorite) "Remove from favorites" else "Add to favorites",
-                    tint = if (isFavorite) MaterialTheme.colorScheme.primary else bodyColor
+                    tint = if (isFavorite) AppPalettes.darkVibrant.background else bodyColor
                 )
             }
         }
@@ -107,7 +104,6 @@ private fun SessionListItemPreview() {
         benefits = "Strengthens abs.",
         imageUrl = ""
     )
-    // Update preview to pass in colors
     SessionListItem(
         pose = samplePose,
         isFavorite = true,
