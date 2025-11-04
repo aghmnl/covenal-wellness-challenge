@@ -43,7 +43,7 @@ class MainActivity : ComponentActivity() {
 
                     composable(route = Screen.Detail.route) {
                         Log.d(TAG, "NavHost: Composing DetailScreen")
-                        SessionDetailScreen()
+                        SessionDetailScreen(navController = navController)
                     }
                 }
             }

@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material3.*
@@ -19,13 +20,16 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 
 private const val TAG = "SessionDetailScreen"
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SessionDetailScreen(
+    navController: NavController,
     viewModel: SessionDetailViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -35,20 +39,35 @@ fun SessionDetailScreen(
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
-        floatingActionButton = {
-            FloatingActionButton(
-                onClick = {
-                    Log.d(TAG, "FAB clicked, calling viewModel.onToggleFavorite()")
-                    viewModel.onToggleFavorite()
-                }
-            ) {
-                Icon(
-                    imageVector = if (isFavorite) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
-                    contentDescription = if (isFavorite) "Remove from favorites" else "Add to favorites"
-                )
-            }
-        }
 
+        topBar = {
+            TopAppBar(
+                title = {  },
+                navigationIcon = {
+                    IconButton(onClick = {
+                        Log.d(TAG, "TopAppBar: Back button clicked.")
+                        navController.popBackStack()
+                    }) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Back"
+                        )
+                    }
+                },
+                actions = {
+                    IconButton(onClick = {
+                        Log.d(TAG, "TopAppBar: Favorite icon clicked.")
+                        viewModel.onToggleFavorite()
+                    }) {
+                        Icon(
+                            imageVector = if (isFavorite) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
+                            contentDescription = if (isFavorite) "Remove from favorites" else "Add to favorites",
+                            tint = if (isFavorite) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                }
+            )
+        }
     ) { innerPadding ->
         Box(
             modifier = Modifier
