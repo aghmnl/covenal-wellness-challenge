@@ -19,11 +19,11 @@ This is a simple Android wellness app built for the *Android Frontend Developer*
 * **Detail Screen:** Tapping a pose navigates to a detail screen with more information.
 * **Persistent Favorites:** Users can add/remove poses from a favorites list. The state is saved locally using a **Room database**, so favorites are remembered even after the app closes.
 * **Themed UI:**
-    * Uses a custom "Light Vibrant" color palette (`AppCardColors.kt`) for all list items.
-    * Uses the custom `NunitoSans` variable font for all text.
+  * Uses a custom "Light Vibrant" color palette (`AppCardColors.kt`) for all list items.
+  * Uses the custom `NunitoSans` variable font for all text.
 * **Robust Data Strategy:** The app uses a **remote-first, local-fallback** approach.
-    * It first tries to fetch data from the live API.
-    * If the network fails (timeout or offline), it shows a user-friendly Toast message and seamlessly loads the data from a local `poses.json` file.
+  * It first tries to fetch data from the live API.
+  * If the network fails (timeout or offline), it shows a user-friendly Toast message and seamlessly loads the data from a local `poses.json` file.
 * **Polished Error States:** A custom "Something snapped!" screen (`ErrorStateView`) is shown if the local data file fails to load.
 
 ---
@@ -45,6 +45,8 @@ This project was built using **100% Kotlin** and follows modern Android developm
 | **Data Source** | **Hybrid (Remote/Local)** | The `SessionRepository` acts as the single source of truth for *poses*, first attempting a network call. On failure, it falls back to a bundled `poses.json` file. |
 | **Persistence** | **Room Database** | User favorites are persisted locally in a Room database. The `FavoritesRepository` abstracts this logic from the UseCases. |
 | **Build** | **KSP (Kotlin Symbol Processing)** | Replaced `kapt` for both Hilt and Room to significantly improve build speed and performance. |
+| **Analytics** | **Firebase Analytics** | **(Bonus)** Integrated to demonstrate understanding of production-level user behavior tracking. |
+| **Crash Reporting** | **Firebase Crashlytics** | **(Bonus)** Integrated to provide production-grade stability monitoring and crash diagnostics. |
 | **Image Loading** | **Coil** | A modern, Kotlin-first image loading library that integrates perfectly with Jetpack Compose. |
 | **Theming** | **Static Theme** | A custom, consistent color palette (`lightVibrant`) is defined in `AppPalettes.kt` and applied to all cards via `AppCardColors.kt` for a clean, branded feel. |
 | **Font** | **`NunitoSans` (Variable Font)** | A custom variable font (`.ttf`) is bundled in `res/font` and defined in `Type.kt` to give the app a unique, serene feel. |
@@ -58,8 +60,9 @@ This project was built using **100% Kotlin** and follows modern Android developm
     git clone https://github.com/aghmnl/covenal-wellness-challenge
     ```
 2.  Open the project in a recent version of Android Studio (e.g., Iguana or newer).
-3.  Let Gradle sync all dependencies.
-4.  Build and run the app on an emulator or physical device.
+3.  **Important:** Add your own `google-services.json` file from a Firebase project into the `app/` directory for the project to build.
+4.  Let Gradle sync all dependencies.
+5.  Build and run the app on an emulator or physical device.
 
 ---
 
@@ -78,3 +81,11 @@ You can run them by:
 3.  Open the app.
 4.  Observe the **"Could not reach server. Loading local data."** Toast message.
 5.  The app will load the list instantly from the local `poses.json` file.
+
+---
+
+## 📦 Submission Artifacts
+
+* **Source Code:** The full source code is contained in this repository.
+* **Release APK:** A signed APK is included in the repository.
+  * **[Download Signed APK (app-release.apk)](app/release/app-release.apk)**

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "630940859139",
+    "project_id": "covenal-wellness-app",
+    "storage_bucket": "covenal-wellness-app.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:630940859139:android:ee6d58adf386d31b1e4736",
+        "android_client_info": {
+          "package_name": "com.agus.wellnessapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBpbltVgHXcKxHLZJQx5lJ92lNNfFyH7zg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
