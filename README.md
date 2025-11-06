@@ -4,6 +4,8 @@
 
 This is a simple Android wellness app built for the *Android Frontend Developer* position. The app displays a list of wellness sessions (yoga poses), allows users to view details, and mark their favorites.
 
+**[View Privacy Policy](https://aghmnl.github.io/covenal-wellness-challenge/covenal-privacy-policy.html)**
+
 ---
 
 ## 📸 Screenshots
@@ -16,7 +18,7 @@ This is a simple Android wellness app built for the *Android Frontend Developer*
 
 ## 🎯 Features
 
-* **Deployment Status:** The app has been successfully uploaded and rolled out to an **Internal Testing** track on the `Google Play Console`, demonstrating readiness for production environments.
+* **Deployment Status:** The app has been successfully **uploaded and rolled out to an Internal Testing track** on the Google Play Console, demonstrating readiness for production environments.
 * **App Icon:** A custom, branded app icon has been implemented.
 * **Tabbed Main Screen:** The main screen features a `NavigationBar` (bottom nav) to switch between two views: "All Poses" and "Favorites".
 * **Favorites Tab & Badge:** The "Favorites" tab shows a filtered list of the user's saved poses. The navigation icon includes a `BadgedBox` that displays the total count of favorited items.
@@ -61,7 +63,7 @@ This project was built using **100% Kotlin** and follows modern Android developm
 
 1.  Clone this repository:
     ```bash
-    git clone https://github.com/aghmnl/covenal-wellness-challenge
+    git clone [https://github.com/aghmnl/covenal-wellness-challenge](https://github.com/aghmnl/covenal-wellness-challenge)
     ```
 2.  Open the project in a recent version of Android Studio (e.g., Iguana or newer).
 3.  **Important:** Add your own `google-services.json` file from a Firebase project into the `app/` directory for the project to build.
@@ -93,3 +95,5 @@ You can run them by:
 * **Source Code:** The full source code is contained in this repository.
 * **Release APK:** A signed APK is included in the repository.
   * **[Download Signed APK (app-release.apk)](app/release/app-release.apk)**
+* **Privacy Policy:** The app's privacy policy is hosted on GitHub Pages (required for Google Play).
+  * **[View Privacy Policy](https://aghmnl.github.io/covenal-wellness-challenge/covenal-privacy-policy.html)**
